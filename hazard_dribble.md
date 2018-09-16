@@ -86,4 +86,4 @@ create_Pitch() +
 ![](figures/hazard_dribble2.png)
 
 ![](figures/hazard_nutmeg_pan.jpg)
-![](figures/statsbomb-log.jpg)
+![](figures/statsbomb-logo.jpg)
