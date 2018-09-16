@@ -62,7 +62,7 @@ create_Pitch() +
 
 ![](figures/hazard_dribble1.png)
 
-Looks good! But now I'll add `colscale` to use the Belgian colors for the points and also add a few labels: Player name, competiion, number of dribbles, and number of nutmegs.
+Looks good! But now I'll add `colscale` to use the Belgian colors for the points and also add a few labels: Player name, competition, number of dribbles, and number of nutmegs.
 
 ``` r
 create_Pitch() + 
