@@ -60,7 +60,7 @@ create_Pitch() +
   theme(legend.position = "none")
 ```
 
-![](hazard_dribble_files/figure-markdown_github/unnamed-chunk-4-1.png)
+![](unnamed-chunk-4-1.png)
 
 Looks good! But now I'll add `colscale` to use the Belgian colors for the points and also add a few labels: Player name, competiion, number of dribbles, and number of nutmegs.
 
@@ -83,4 +83,4 @@ create_Pitch() +
             hjust = 0, vjust = 0.5, size = 3)
 ```
 
-![](hazard_dribble_files/figure-markdown_github/unnamed-chunk-5-1.png)
+![](unnamed-chunk-5-1.png)
