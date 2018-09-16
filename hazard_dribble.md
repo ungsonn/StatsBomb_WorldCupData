@@ -82,7 +82,7 @@ create_Pitch() +
                                sum(!is.na(data$dribble.nutmeg)))), 
             hjust = 0, vjust = 0.5, size = 3)
 ```
-
+![](figures/hazard_nutmeg_pan.png)
 ![](figures/hazard_dribble2.png)
 
-![](figures/hazard_nutmeg_pan.png)
+
