@@ -7,13 +7,13 @@ Examining France at WC 2018
     -   [Tidy Location Data](#tidy-location-data)
     -   [Variable Calculation](#variable-calculation)
 -   [Investigation](#investigation)
-    -   [Team: Passes per match](#team-passes-per-match)
+    -   [Team: Shots per match](#team-shots-per-match)
     -   [France: Shot Map](#france-shot-map)
 -   [Source](#source)
 
 Nick D. Ungson
 
-**Last updated:** 2018-11-18 15:11:25
+**Last updated:** 2018-11-18 15:26:00
 
 Below, I use some procedures and concepts described by FC rSTATS during our meeting on 2018-11-08 (and on their website) to examine France's performance at the *2018 FIFA World Cup*.
 
@@ -104,56 +104,60 @@ events <- events %>%
 Investigation
 =============
 
-Team: Passes per match
-----------------------
+Team: Shots per match
+---------------------
 
-Display all teams at the World Cup and sort by number of passes per game.
+Display all teams at the World Cup and sort by number of shots per match.
 
 ``` r
 events %>% 
-  filter(type.name == "Pass") %>% 
+  filter((type.name == "Shot" | 
+            type.name == "shot_in_box" | 
+            type.name == "shot_out_box") & 
+  shot.type.name != "Penalty") %>% 
   group_by(team.name) %>% 
   summarize(matches = length(unique(match_id)), 
-            pass_per_match = round(n() / matches, 0)) %>%
-  arrange(desc(pass_per_match)) %>% 
+            shots_total = round(n()), 
+            shots_per_match = round(n() / matches, 0)) %>%
+  arrange(desc(shots_per_match)) %>% 
   print(n = 32)
 ```
 
-    ## # A tibble: 32 x 3
-    ##    team.name    matches pass_per_match
-    ##    <chr>          <int>          <dbl>
-    ##  1 Spain              4            812
-    ##  2 Germany            3            606
-    ##  3 Argentina          4            562
-    ##  4 Saudi Arabia       3            555
-    ##  5 Brazil             5            524
-    ##  6 England            7            514
-    ##  7 Croatia            7            513
-    ##  8 Switzerland        4            498
-    ##  9 Belgium            7            487
-    ## 10 Japan              4            485
-    ## 11 Australia          3            468
-    ## 12 Poland             3            456
-    ## 13 Portugal           4            452
-    ## 14 Colombia           4            447
-    ## 15 Tunisia            3            444
-    ## 16 France             7            416
-    ## 17 Peru               3            415
-    ## 18 Uruguay            5            406
-    ## 19 Egypt              3            392
-    ## 20 Mexico             4            388
-    ## 21 Denmark            4            383
-    ## 22 Nigeria            3            372
-    ## 23 Morocco            3            371
-    ## 24 Serbia             3            345
-    ## 25 Costa Rica         3            330
-    ## 26 Russia             5            330
-    ## 27 Panama             3            304
-    ## 28 Senegal            3            303
-    ## 29 South Korea        3            284
-    ## 30 Sweden             5            280
-    ## 31 Iceland            3            239
-    ## 32 Iran               3            204
+    ## # A tibble: 32 x 4
+    ##    team.name    matches shots_total shots_per_match
+    ##    <chr>          <int>       <dbl>           <dbl>
+    ##  1 Germany            3          73              24
+    ##  2 Brazil             5         103              21
+    ##  3 Spain              4          72              18
+    ##  4 Croatia            7         112              16
+    ##  5 Belgium            7         107              15
+    ##  6 Mexico             4          61              15
+    ##  7 Argentina          4          57              14
+    ##  8 Portugal           4          56              14
+    ##  9 Switzerland        4          55              14
+    ## 10 England            7          93              13
+    ## 11 Morocco            3          39              13
+    ## 12 Nigeria            3          38              13
+    ## 13 Uruguay            5          63              13
+    ## 14 Serbia             3          35              12
+    ## 15 Tunisia            3          37              12
+    ## 16 Australia          3          32              11
+    ## 17 France             7          79              11
+    ## 18 Iceland            3          34              11
+    ## 19 Japan              4          43              11
+    ## 20 Peru               3          32              11
+    ## 21 Poland             3          32              11
+    ## 22 Saudi Arabia       3          33              11
+    ## 23 South Korea        3          34              11
+    ## 24 Sweden             5          56              11
+    ## 25 Colombia           4          41              10
+    ## 26 Denmark            4          40              10
+    ## 27 Egypt              3          30              10
+    ## 28 Russia             5          49              10
+    ## 29 Senegal            3          29              10
+    ## 30 Costa Rica         3          27               9
+    ## 31 Panama             3          24               8
+    ## 32 Iran               3          22               7
 
 France: Shot Map
 ----------------
@@ -186,8 +190,11 @@ fr.plot + geom_point(data = fr.data, aes(x = y,
                                 color = goal)) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = c("#F42A41", "#00209F")) + 
-  geom_text(aes(x = 2, y = 70, label = fr.data$team.name[1]), 
-            hjust = 0, vjust = 0.5, size = 5, colour = "#00209F") +
+  geom_text(aes(x = 2, y = 73, label = fr.data$team.name[1]), 
+            hjust = 0, vjust = 0.5, size = 5, colour = "#00209F") + 
+  geom_text(aes(x = 2, y = 68, label = paste0("Total shots (Non-Penalty): ", 
+                                            nrow(fr.data))), 
+            hjust = 0, vjust = 0.5, size = 3) + 
   geom_text(aes(x = 2, y = 66, 
                 label = paste0("Non-Penalty Expected Goals (xG): ", 
                                round(sum(fr.data$shot.statsbomb_xg), 2))), 

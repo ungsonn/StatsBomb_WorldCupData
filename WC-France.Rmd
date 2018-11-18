@@ -86,16 +86,20 @@ events <- events %>%
 
 # Investigation
 
-## Team: Passes per match
-Display all teams at the World Cup and sort by number of passes per game.
+## Team: Shots per match
+Display all teams at the World Cup and sort by number of shots per match.
 
 ```{r}
 events %>% 
-  filter(type.name == "Pass") %>% 
+  filter((type.name == "Shot" | 
+            type.name == "shot_in_box" | 
+            type.name == "shot_out_box") & 
+  shot.type.name != "Penalty") %>% 
   group_by(team.name) %>% 
   summarize(matches = length(unique(match_id)), 
-            pass_per_match = round(n() / matches, 0)) %>%
-  arrange(desc(pass_per_match)) %>% 
+            shots_total = round(n()), 
+            shots_per_match = round(n() / matches, 0)) %>%
+  arrange(desc(shots_per_match)) %>% 
   print(n = 32)
 ```
 
@@ -128,8 +132,11 @@ fr.plot + geom_point(data = fr.data, aes(x = y,
                                 color = goal)) + 
   theme(legend.position = "none") + 
   scale_color_manual(values = c("#F42A41", "#00209F")) + 
-  geom_text(aes(x = 2, y = 70, label = fr.data$team.name[1]), 
-            hjust = 0, vjust = 0.5, size = 5, colour = "#00209F") +
+  geom_text(aes(x = 2, y = 73, label = fr.data$team.name[1]), 
+            hjust = 0, vjust = 0.5, size = 5, colour = "#00209F") + 
+  geom_text(aes(x = 2, y = 68, label = paste0("Total shots (Non-Penalty): ", 
+                                            nrow(fr.data))), 
+            hjust = 0, vjust = 0.5, size = 3) + 
   geom_text(aes(x = 2, y = 66, 
                 label = paste0("Non-Penalty Expected Goals (xG): ", 
                                round(sum(fr.data$shot.statsbomb_xg), 2))), 
